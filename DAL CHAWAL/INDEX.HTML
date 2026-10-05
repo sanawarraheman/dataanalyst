@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maharashtra Dal Chawal — Ameerpet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Karla:wght@400;500;600;700&family=Karla:ital@1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rice: #F6EEDB;
+    --rice-dark: #EBDFC2;
+    --turmeric: #E3A72E;
+    --turmeric-deep: #C98A1C;
+    --maroon: #7C2F2F;
+    --maroon-deep: #5E2020;
+    --leaf: #3F6B4A;
+    --wood: #3A2A1E;
+    --ink: #2C2018;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--rice);
+    color: var(--ink);
+    font-family: 'Karla', sans-serif;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+  .display { font-family: 'Rozha One', serif; }
+  
+  .texture {
+    position: fixed; inset: 0; pointer-events: none; opacity: 0.05;
+    background-image: radial-gradient(circle at 20% 30%, var(--leaf) 0, transparent 40%),
+                       radial-gradient(circle at 80% 70%, var(--maroon) 0, transparent 45%);
+    z-index: 0;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+  header.top { padding: 28px 20px 10px; text-align: center; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--leaf); font-weight: 700; }
+  .brand { font-size: 40px; color: var(--maroon-deep); margin-top: 6px; line-height: 1.1; }
+  .brand .devanagari { display: block; font-size: 22px; color: var(--turmeric-deep); margin-bottom: 2px; font-weight: 700; letter-spacing: 0.02em; }
+  .tagline { margin-top: 8px; color: var(--wood); font-size: 15px; opacity: 0.85; }
+
+  /* HERO */
+  .hero { display: flex; flex-direction: column; align-items: center; padding: 18px 20px 8px; text-align: center; }
+  .thali-photo { width: 280px; max-width: 82vw; height: auto; margin: 6px auto 4px; display: block; filter: drop-shadow(0 10px 18px rgba(58,42,30,0.28)); border-radius: 12px;}
+  
+  .price-tag { margin-top: 6px; display: inline-flex; align-items: baseline; gap: 6px; background: var(--maroon); color: var(--rice); padding: 10px 22px; border-radius: 999px; box-shadow: 0 4px 0 var(--maroon-deep); }
+  .price-tag .rupee { font-size: 28px; font-family: 'Rozha One', serif; }
+  .price-tag .per { font-size: 13px; opacity: 0.85; }
+
+  /* TRUST BADGES */
+  .trust-badges { display: flex; gap: 10px; justify-content: center; margin-top: 12px; font-size: 12px; font-weight: 600; color: var(--leaf); }
+  .trust-badges span { background: #e8f5e9; padding: 4px 10px; border-radius: 6px; border: 1px solid #c8e6c9;}
+
+  /* FOMO TEXT */
+  .fomo-text { margin-top: 20px; font-size: 14px; font-weight: 700; color: #d32f2f; background: #ffebee; padding: 6px 12px; border-radius: 6px; display: inline-block;}
+
+  .cta-row { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 340px; }
+  .btn { display: block; text-align: center; padding: 15px 20px; border-radius: 12px; font-weight: 700; font-size: 16px; text-decoration: none; border: none; cursor: pointer; transition: transform 0.15s ease; }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--leaf); color: var(--rice); box-shadow: 0 4px 0 #2b4d34; }
+  .btn-secondary { background: transparent; color: var(--maroon-deep); border: 2px solid var(--maroon-deep); }
+  .counter { margin-top: 14px; font-size: 14px; color: var(--wood); }
+  .counter strong { color: var(--maroon-deep); font-size: 17px; }
+
+  /* FOUNDER NOTE */
+  .founder-note { background: #fff; border-left: 4px solid var(--turmeric); padding: 18px; margin: 30px 20px 10px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+  .founder-note h3 { font-size: 18px; color: var(--maroon-deep); margin-bottom: 8px; }
+  .founder-note p { font-size: 14.5px; color: var(--wood); line-height: 1.6; }
+
+  /* WHATSAPP REVIEWS */
+  .reviews { padding: 20px; }
+  .review-card { background: #e1ffc7; padding: 12px; border-radius: 12px 12px 12px 0px; max-width: 85%; margin: 10px auto; position: relative; font-size: 14px; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+  .review-card span { font-size: 10px; color: #666; display: block; text-align: right; margin-top: 4px;}
+
+  /* MENU & WHY */
+  .section { padding: 20px 20px 10px; }
+  .section-title { font-size: 26px; color: var(--maroon-deep); text-align: center; margin-bottom: 4px; }
+  .section-sub { text-align: center; font-size: 13px; color: var(--wood); opacity: 0.75; margin-bottom: 22px; }
+  .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .menu-item { background: var(--rice-dark); border-radius: 14px; padding: 16px 14px; display: flex; align-items: center; gap: 10px; }
+  .menu-item .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--turmeric); flex-shrink: 0; }
+  .menu-item span.label { font-size: 14px; font-weight: 600; }
+  
+  .why-list { display: flex; flex-direction: column; gap: 14px; margin-top: 6px; }
+  .why-item { display: flex; gap: 14px; align-items: flex-start; background: #fff8ea; border-left: 4px solid var(--turmeric); padding: 14px 16px; border-radius: 6px; }
+  .why-item .h { font-weight: 700; color: var(--maroon-deep); margin-bottom: 2px; }
+  .why-item .d { font-size: 13.5px; color: var(--wood); opacity: 0.85; }
+
+  /* FINAL CTA */
+  .final { text-align: center; padding: 44px 20px 60px; }
+  .final .display { font-size: 24px; color: var(--maroon-deep); margin-bottom: 8px; }
+  .final p { font-size: 14px; color: var(--wood); opacity: 0.85; margin-bottom: 18px; }
+  footer { text-align: center; padding: 20px; font-size: 12px; color: var(--wood); opacity: 0.6; }
+
+  @media (min-width: 560px) {
+    .hero { flex-direction: row; text-align: left; gap: 30px; padding-top: 30px; }
+    .hero-left { flex: 1; display: flex; flex-direction: column; align-items: flex-start; }
+    .cta-row { align-items: flex-start; }
+    .price-tag { align-self: flex-start; }
+    .counter { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="texture"></div>
+
+<header class="top wrap">
+  <div class="eyebrow">Ameerpet · Ghar Jaisa Khana</div>
+  <div class="brand">
+    <span class="devanagari">महाराष्ट्र</span>
+    Dal Chawal
+  </div>
+  <div class="tagline">Varan-Bhaat, jaisa Maharashtra mein ghar mein banta hai — ab Ameerpet mein.</div>
+</header>
+
+<div class="wrap">
+  <div class="hero" id="heroSection">
+    <div class="hero-left">
+      <!-- Aapki nayi remove-bg wali image yahan add ho gayi hai -->
+      <img class="thali-photo" src="dalchawal.png" alt="Garam Maharashtra Dal Chawal thali">
+      
+      <div class="trust-badges">
+        <span>💧 100% RO Water</span>
+        <span>🚫 No Added Colors</span>
+      </div>
+
+      <div class="price-tag">
+        <span class="rupee">₹60</span>
+        <span class="per">/ full thali</span>
+      </div>
+
+      <div class="fomo-text">🔥 Day 1 Trial: Sirf 50 Thali bache hain!</div>
+
+      <div class="cta-row">
+        <button class="btn btn-primary" id="interestBtn">Haan, Mujhe Chahiye 🙋</button>
+        <a class="btn btn-secondary" id="waBtn" href="#" target="_blank" rel="noopener">WhatsApp Pe Baat Karo</a>
+      </div>
+
+      <div class="counter" id="counterText">Loading interest count…</div>
+    </div>
+  </div>
+
+  <div class="founder-note">
+    <h3>Meri Taraf Se Ek Chhoti Si Baat 👨‍💻</h3>
+    <p>Namaste! Mai or mera friend. Main bhi yahan Ameerpet mein baaki sab ki tarah  Data-Science seekh raha hu. Maharashtra se yahan aane ke baad sabse zyada kuch miss kiya toh wo tha ghar ka 'Varan-Bhaat(Dal-Chawal)'. Roz bahar ka oily aur spicy khana kha kar health kharab ho rahi thi. Isliye socha, kyun na apne doston aur batchmates ke liye ekdam authentic, RO water se bana ghar jaisa khana shuru karun. Support kijiyega!</p>
+  </div>
+
+  <section class="section">
+    <div class="section-title display">Thali Mein Kya Milega</div>
+    <div class="section-sub">Roz taaza, ghar jaisa banaya hua</div>
+    <div class="menu-grid">
+      <div class="menu-item"><span class="dot"></span><span class="label">Garam Varan (Dal)</span></div>
+      <div class="menu-item"><span class="dot"></span><span class="label">Steamed Chawal</span></div>
+      <div class="menu-item"><span class="dot"></span><span class="label">Ghar ka Achar</span></div>
+      <div class="menu-item"><span class="dot"></span><span class="label">Papad / Salad</span></div>
+    </div>
+  </section>
+
+  <section class="reviews">
+    <div class="section-title display">Log Kya Keh Rahe Hain</div>
+    <div class="review-card">
+      "Bhai, kal ka thali bohot mast tha! Ekdam ghar ki yaad aa gayi. Aaj 2 thali bhej dena hostel pe."
+      <span>12:45 PM ✓✓</span>
+    </div>
+    <div class="review-card" style="margin-left: 0; background: #fff; border: 1px solid #ddd;">
+      "Ameerpet me pehli baar bina itne masale ka khana mila. 60Rs me totally worth it hai bhai."
+      <span>1:10 PM ✓✓</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title display">Kyun Try Karein</div>
+    <div class="why-list">
+      <div class="why-item">
+        <div>
+          <div class="h">Ghar Jaisa Swaad</div>
+          <div class="d">Bahar ke hotel jaisa tel-masala nahi — halka aur ghar mein bana hua khana jisse neend nahi aati classes me.</div>
+        </div>
+      </div>
+      <div class="why-item">
+        <div>
+          <div class="h">Jeb Pe Halka</div>
+          <div class="d">₹60 mein pet bhar khana — students aur office jaane walon dono ke liye perfect.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="display">Batao, Aapko Pasand Aayega?</div>
+    <p>Bas ek tap — isse mujhe pata chalega ke Ameerpet mein humari thali chalegi ya nahi.</p>
+    <div class="cta-row" style="margin: 0 auto;">
+      <button class="btn btn-primary" onclick="document.getElementById('interestBtn').click(); window.scrollTo({top:0, behavior:'smooth'});">Mujhe Interested Karo</button>
+    </div>
+  </section>
+</div>
+
+<footer>Yeh ek validation page hai — abhi hotel shuru nahi hua hai. Aapka interest hi meri decide karne mein madad karega.</footer>
+
+<script>
+  const WHATSAPP_NUMBER = "919322688863";
+  const waMsg = encodeURIComponent("Mujhe Maharashtra Dal Chawal (₹60 thali) mein interest hai, Maharashtra dal-cha.");
+  document.getElementById('waBtn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${waMsg}`;
+
+  const COUNT_KEY = "maharashtra-dal-chawal-interest-count";
+  const VOTED_KEY = "maharashtra-dal-chawal-voted";
+  const counterText = document.getElementById('counterText');
+  const interestBtn = document.getElementById('interestBtn');
+
+  async function loadCount() {
+    try {
+      const result = await window.storage.get(COUNT_KEY, true);
+      const count = result ? parseInt(result.value, 10) : 0;
+      renderCount(count);
+    } catch (e) {
+      renderCount(0);
+    }
+  }
+
+  function renderCount(count) {
+    counterText.innerHTML = `<strong>${count}</strong> log Ameerpet mein interested hain`;
+  }
+
+  async function registerInterest() {
+    try {
+      let current = 0;
+      try {
+        const result = await window.storage.get(COUNT_KEY, true);
+        current = result ? parseInt(result.value, 10) : 0;
+      } catch (e) {
+        current = 0;
+      }
+      const updated = current + 1;
+      await window.storage.set(COUNT_KEY, String(updated), true);
+      renderCount(updated);
+      interestBtn.textContent = "Dhanyawaad! ✅ Aap Interested Ho";
+      interestBtn.disabled = true;
+      interestBtn.style.opacity = "0.75";
+    } catch (e) {
+      interestBtn.textContent = "Kuch gadbad hui, phir try karo";
+    }
+  }
+
+  interestBtn.addEventListener('click', registerInterest);
+  loadCount();
+</script>
+</body>
+</html>
