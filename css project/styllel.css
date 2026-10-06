@@ -1,0 +1,114 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    line-height: o.6;
+    background-size: cover;
+    
+
+}
+
+body {
+    background-color: #f4f4f4;
+    background-image: url(project.jpeg);
+
+    
+
+    
+}
+
+/* Navbar Styling */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 8%;
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Logo Styling */
+.logo h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+}
+
+.logo span {
+    color: #ff4d05; /* Orange color */
+}
+
+/* Navigation Links */
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links li {
+    padding: 0 20px;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    color: #555;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+/* Hover & Active Effect */
+.nav-links li a:hover, .nav-links li a.active {
+    color: #ff4d05;
+}
+
+/* Button Styling */
+.btn {
+    background-color: #ff4d05;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.4s;
+}
+
+.btn:hover {
+    background-color: #333;
+    box-shadow: 0 5px 15px rgba(255, 77, 5, 0.4);
+}
+
+.menu-item{
+    color: #f4f4f4;
+    background-color: #ca5f35;
+    font-family: 'Times New Roman', Times, serif;
+}
+p{
+    font-size: 14px;
+    color: cornsilk;
+}
+.item-price{
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    
+    text-align: right ;
+    margin-bottom: 10px;
+    
+}
+
+
+/* Responsive (Mobile View) */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; /* Mobile pe menu hide karne ke liye */
+    }
+    
+    .navbar {
+        padding: 15px 5%;
+    }
+}
