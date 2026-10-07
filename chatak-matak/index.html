@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Chatak Matak Digital Menu">
+    <title>Chatak Matak - Digital Menu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --bg-color: #fffbf2;       
+            --card-bg: #ffffff;        
+            --header-gradient: linear-gradient(135deg, #5d4037, #4e342e); 
+            --text-main: #3e2723;      
+            --text-price: #bf360c;     
+            --cat-bg: #e6d5b8;         
+            --cat-text: #3e2723;       
+            --btn-border: #bf360c;     
+            --btn-text: #bf360c;       
+            --btn-bg-active: #bf360c;  
+            --shadow: 0 4px 10px rgba(62, 39, 35, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Nunito', sans-serif; }
+        body { background-color: var(--bg-color); padding-bottom: 100px; color: var(--text-main); }
+
+        /* Header */
+        header {
+            background: var(--header-gradient);
+            color: #fff;
+            padding: 25px 20px 55px 20px;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+            z-index: 1;
+        }
+        header h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 5px; }
+        header p { opacity: 0.9; font-weight: 600; font-size: 1rem; }
+
+        /* Order Mode Buttons */
+        .order-mode-container {
+            display: flex;
+            justify-content: center;
+            margin-top: -30px;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 10;
+        }
+        .order-mode {
+            background: var(--card-bg);
+            padding: 6px;
+            border-radius: 35px;
+            box-shadow: var(--shadow);
+            display: flex;
+            width: 90%;
+            max-width: 350px;
+        }
+        .mode-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            font-weight: 800;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            color: #8d6e63;
+            font-size: 1rem;
+        }
+        .mode-btn.active {
+            background: var(--text-price);
+            color: #fff;
+            box-shadow: 0 2px 5px rgba(191, 54, 12, 0.3);
+        }
+
+        /* Category Scroll */
+        .categories {
+            display: flex;
+            overflow-x: auto;
+            padding: 0 15px 10px 15px;
+            gap: 12px;
+            scrollbar-width: none;
+        }
+        .categories::-webkit-scrollbar { display: none; }
+        .cat-btn {
+            white-space: nowrap;
+            padding: 10px 22px;
+            background: var(--card-bg);
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            color: var(--text-main);
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .cat-btn.active {
+            background: var(--text-main);
+            color: #fff;
+            border-color: var(--text-main);
+        }
+
+        /* Menu List */
+        .menu-container { padding: 0 15px 15px; }
+        .category-title {
+            font-size: 1.4rem;
+            color: var(--cat-text);
+            margin: 25px 0 15px;
+            font-weight: 900;
+            background-color: var(--cat-bg);
+            padding: 8px 15px;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 2px 2px 0px rgba(62, 39, 35, 0.1);
+        }
+
+        .item-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .item-info { flex: 1; padding-right: 12px; }
+        .item-info h3 { font-size: 1.1rem; color: var(--text-main); margin-bottom: 5px; font-weight: 800; }
+        .item-info .price { color: var(--text-price); font-weight: 900; font-size: 1.2rem; }
+
+        /* Buttons & Controls */
+        .add-btn-wrapper { width: 105px; height: 40px; position: relative; }
+        
+        .btn-add-initial {
+            width: 100%; height: 100%;
+            background: var(--card-bg);
+            border: 2px solid var(--btn-border);
+            color: var(--btn-text);
+            font-weight: 900;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .qty-controls {
+            display: none; /* Hidden by default */
+            width: 100%; height: 100%;
+            background: var(--btn-bg-active);
+            border-radius: 10px;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            font-weight: 900;
+        }
+
+        .qty-btn {
+            background: transparent; border: none; color: white;
+            width: 35px; height: 100%; font-size: 1.3rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Bottom Cart Bar */
+        .cart-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: var(--card-bg);
+            padding: 15px 20px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            display: none; /* Hidden if cart empty */
+            justify-content: space-between; align-items: center;
+            z-index: 1000;
+            border-top: 1px solid #eee;
+        }
+
+        .place-order-btn {
+            background: #25D366;
+            color: white; border: none; padding: 12px 25px;
+            border-radius: 12px; font-weight: 800; font-size: 1rem;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+            cursor: pointer;
+        }
+
+        /* Modal */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(62, 39, 35, 0.6);
+            z-index: 2000; justify-content: center; align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background: #fffbf2;
+            padding: 25px; width: 90%; max-width: 400px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from {transform: translateY(50px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: 800; color: var(--text-main); }
+        .input-group input, .input-group textarea {
+            width: 100%; padding: 14px;
+            border: 2px solid #d7ccc8;
+            background: #fff; border-radius: 12px;
+            font-size: 1rem; outline: none; color: var(--text-main); font-weight: 600;
+        }
+        .loc-btn {
+            background: #efebe9; color: var(--text-main);
+            border: 2px dashed var(--text-main);
+            padding: 12px; width: 100%; border-radius: 12px;
+            cursor: pointer; margin-bottom: 15px; font-weight: 800;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .confirm-btn {
+            background: var(--btn-bg-active); color: white;
+            width: 100%; padding: 16px; border: none;
+            border-radius: 15px; font-size: 1.1rem; font-weight: 800;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(191, 54, 12, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Chatak Matak</h1>
+        <p>Restro & Cafe | 📞 9284669355</p>
+    </header>
+
+    <main>
+        <div class="order-mode-container">
+            <div class="order-mode">
+                <button class="mode-btn active" onclick="setOrderMode('dinein')" id="btn-dinein">
+                    <i class="fas fa-chair"></i> Dine-In
+                </button>
+                <button class="mode-btn" onclick="setOrderMode('delivery')" id="btn-delivery">
+                    <i class="fas fa-motorcycle"></i> Delivery
+                </button>
+            </div>
+        </div>
+
+        <nav class="categories" id="category-bar"></nav>
+
+        <section class="menu-container" id="menu-list">
+            <p style="text-align:center; color:#8d6e63; margin-top:30px; font-weight:700;">Loading Menu...</p>
+        </section>
+    </main>
+
+    <footer class="cart-bar" id="cart-bar">
+        <div>
+            <div style="font-size: 0.95rem; color: #5d4037; font-weight:700;" id="total-items">0 Items</div>
+            <div style="font-size: 1.5rem; font-weight: 900; color: #bf360c;" id="total-price">₹0</div>
+        </div>
+        <button class="place-order-btn" onclick="openDetailsModal()">
+            Place Order <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i>
+        </button>
+    </footer>
+
+    <div class="modal" id="order-modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 20px; color: var(--text-main); font-weight:900;">Complete Details</h2>
+            
+            <div id="delivery-fields" style="display: none;">
+                <div class="input-group">
+                    <label>Your Name</label>
+                    <input type="text" id="cust-name" placeholder="Enter your name">
+                </div>
+                
+                <div class="input-group">
+                    <label>Address / Location</label>
+                    <button class="loc-btn" onclick="getLocation()">
+                        <i class="fas fa-map-marker-alt"></i> Share Current Location
+                    </button>
+                    <textarea id="cust-address" rows="3" placeholder="Type address manually..."></textarea>
+                </div>
+            </div>
+
+            <div id="dinein-fields">
+                <div class="input-group">
+                    <label>Table Number</label>
+                    <input type="number" id="table-no" placeholder="Ex: 5">
+                </div>
+            </div>
+
+            <button class="confirm-btn" onclick="sendToWhatsapp()">Send Order on WhatsApp</button>
+            <button onclick="closeModal()" style="width:100%; margin-top:15px; padding:10px; background:none; border:none; color:#8d6e63; font-weight:700; cursor:pointer; font-size:1rem;">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        // === MENU DATA ===
+        const menuData = [
+            { 
+                category: "South Indian (Dosa)", 
+                items: [
+                    {name: "Plain Dosa", price: 69},
+                    {name: "Masala Dosa", price: 79},
+                    {name: "Paper Plain Dosa", price: 89},
+                    {name: "Paper Masala Dosa", price: 99},
+                    {name: "Butter Plain Dosa", price: 79},
+                    {name: "Butter Masala Dosa", price: 99},
+                    {name: "Cheese Plain Dosa", price: 99},
+                    {name: "Cheese Masala Dosa", price: 109},
+                    {name: "Onion Masala Dosa", price: 89},
+                    {name: "Paneer Plain Dosa", price: 99},
+                    {name: "Paneer Masala Dosa", price: 109},
+                    {name: "Cheese Paneer Plain Dosa", price: 139},
+                    {name: "Cheese Paneer Masala Dosa", price: 149},
+                    {name: "Ghee Plain Dosa", price: 99},
+                    {name: "Ghee Masala Dosa", price: 109},
+                    {name: "Sezwan Plain Dosa", price: 89},
+                    {name: "Sezwan Masala Dosa", price: 99},
+                    {name: "Jini Plain Dosa", price: 109},
+                    {name: "Jini Masala Dosa", price: 119},
+                    {name: "Jini Paneer Dosa", price: 129},
+                    {name: "Jini Cheese Dosa", price: 139},
+                    {name: "Bengaluru Podi Masala Dosa", price: 139}
+                ] 
+            },
+            { 
+                category: "South Indian (Uttapam)", 
+                items: [
+                    {name: "Masala Uttapam", price: 99},
+                    {name: "Butter Masala Uttapam", price: 109},
+                    {name: "Onion Uttapam", price: 89},
+                    {name: "Tomato Uttapam", price: 89},
+                    {name: "Paneer Uttapam", price: 119},
+                    {name: "Cheese Uttapam", price: 129},
+                    {name: "Sezwan Uttapam", price: 99},
+                    {name: "Onion & Tomato Uttapam", price: 99},
+                    {name: "Paneer & Cheese Uttapam", price: 139}
+                ] 
+            },
+            { 
+                category: "Pav Bhaji", 
+                items: [
+                    {name: "Amul Butter Pav Bhaji", price: 119},
+                    {name: "Pav Bhaji + Extra Pav", price: 99},
+                    {name: "Regular Pav Bhaji", price: 79},
+                    {name: "Extra Bhaji", price: 59},
+                    {name: "Paneer Pav Bhaji", price: 109},
+                    {name: "Cheese Pav Bhaji", price: 119},
+                    {name: "Sezwan Pav Bhaji", price: 89},
+                    {name: "Double Butter Pav Bhaji", price: 139},
+                    {name: "Double Cheese Pav Bhaji", price: 159},
+                    {name: "Extra Pav", price: 25}
+                ] 
+            },
+            { 
+                category: "Pizza", 
+                items: [
+                    {name: "Onion Pizza (Small)", price: 79},
+                    {name: "Onion Pizza (Large)", price: 179},
+                    {name: "Capsicum Pizza (Small)", price: 89},
+                    {name: "Capsicum Pizza (Large)", price: 189},
+                    {name: "Corn Pizza (Small)", price: 99},
+                    {name: "Corn Pizza (Large)", price: 199},
+                    {name: "Capsicum & Onion (Small)", price: 119},
+                    {name: "Capsicum & Onion (Large)", price: 219},
+                    {name: "Corn & Paneer (Small)", price: 129},
+                    {name: "Corn & Paneer (Large)", price: 219},
+                    {name: "Olives & Mushroom (Small)", price: 139},
+                    {name: "Olives & Mushroom (Large)", price: 239},
+                    {name: "Veg Cheese Pizza (Small)", price: 149},
+                    {name: "Veg Cheese Pizza (Large)", price: 249},
+                    {name: "Paneer Cheese Pizza (Small)", price: 159},
+                    {name: "Paneer Cheese Pizza (Large)", price: 259},
+                    {name: "Mushroom Cheese Pizza (Small)", price: 169},
+                    {name: "Mushroom Cheese Pizza (Large)", price: 269},
+                    {name: "Chatak Matak Special (Small)", price: 179},
+                    {name: "Chatak Matak Special (Large)", price: 279},
+                    {name: "Tandoori Paneer Pizza (Small)", price: 189},
+                    {name: "Tandoori Paneer Pizza (Large)", price: 289},
+                    {name: "Paneer Tikka Pizza (Small)", price: 199},
+                    {name: "Paneer Tikka Pizza (Large)", price: 299},
+                    {name: "Amul veg Cheese Pizza (Small)", price: 199},
+                    {name: " Amul veg cheese pizza (Large)", price: 349},
+                    {name: "Amul chatak matak Special (small))", price: 239},
+                    {name: "Amul chatak matak Special (Large))", price: 389},
+                    {name: "Amul Paneer Tikka Pizza (small))", price: 249},
+                    {name: "Amul Paneer Tikka pizza (Large))", price: 399},
+                    {name: "Extra Chees in pizza Small", price: 59},
+                    {name: "Extra Chees in pizza (LARGE) ", price: 99}
+                ] 
+            },
+            { 
+                category: "Burger & Sandwich", 
+                items: [
+                    {name: "Veg Burger", price: 69},
+                    {name: "Veg Schezwan Burger", price: 79},
+                    {name: "Veg Cheese Burger", price: 89},
+                    {name: "Veg Cheese Corn Burger", price: 99},
+                    {name: "Veg Double Patty Burger", price: 139},
+                    {name: "Veg 2 Cheese 2 Patty Burger", price: 169},
+                    {name: "Paneer Burger", price: 99},
+                    {name: "Paneer Schezwan Burger", price: 109},
+                    {name: "Paneer Cheese Burger", price: 129},
+                    {name: "Paneer Cheese Corn Burger", price: 139},
+                    {name: "Paneer Double Patty Burger", price: 169},
+                    {name: "Paneer 2 Cheese 2 Patty Burger", price: 189},
+                    {name: "Veg Sandwich", price: 79},
+                    {name: "Veg Tandoori Sandwich", price: 89},
+                    {name: "Veg Cheese Sandwich", price: 119},
+                    {name: "Veg Club Sandwich", price: 149},
+                    {name: "Paneer Sandwich", price: 99},
+                    {name: "Paneer Tandoori Sandwich", price: 109},
+                    {name: "Paneer Cheese Sandwich", price: 139},
+                    {name: "Paneer Club Sandwich", price: 169},
+                    {name: "Corn Sandwich", price: 89},
+                    {name: "Corn Cheese Sandwich", price: 129},
+                    {name: "Corn Tandoori Sandwich", price: 99},
+                    {name: "Corn Club Sandwich", price: 159}
+                    
+                ] 
+            },
+            { 
+                category: "Pasta", 
+                items: [
+                    {name: "Spicy Schezwan Pasta", price: 109},
+                    {name: "Tomato Twist Red Pasta", price: 99},
+                    {name: "Classic Mushroom Pasta", price: 129},
+                    {name: "Tandoori Paneer Pasta", price: 139},
+                    {name: "White Sauce Pasta", price: 139},
+                    {name: "White Sauce & Paneer Pasta", price: 159},
+                    {name: "White Sauce & Cheese Pasta", price: 179}
+                ] 
+            },
+            { 
+                category: "Chinese (Starters/Rolls)", 
+                items: [
+                    {name: "Veg Manchurian Dry/Gravy", price: 89},
+                    {name: "Chilly Potato", price: 139},
+                    {name: "Honey Chilly Potato", price: 159},
+                    {name: "Corn Crispy", price: 149},
+                    {name: "Chana Chilly", price: 149},
+                    {name: "Roasted Chana", price: 149},
+                    {name: "Mushroom Chilly", price: 169},
+                    {name: "Veg Crispy", price: 149},
+                    {name: "Veg Lollipop", price: 149},
+                    {name: "Paneer Chilly", price: 169},
+                    {name: "Paneer 65", price: 179},
+                    {name: "Paneer Dragon", price: 199},
+                    {name: "Paneer Papdi", price: 199},
+                    {name: "American Chopsuey", price: 199},
+                 
+                ] 
+            },
+            {
+                category: "Rolls", 
+                items: [
+                    {name: "Veg Kathi Roll", price: 79},
+                    {name: "Veg Corn Roll", price: 89},
+                    {name: "Veg Mushroom Roll", price: 99},
+                    {name: "Aloo Tikki Roll", price: 99},
+                    {name: "Aloo Tikki Spicy Roll", price: 119},
+                    {name: "Aloo Tikki Cheese Roll", price: 139},
+                    {name: "Paneer Patty Roll", price: 109},
+                    {name: "Paneer Patty Spicy Roll", price: 129},
+                    {name: "Paneer Patty Cheese Roll", price: 149},
+                
+                ] 
+            },
+            { 
+                category: "Momos", 
+                items: [
+                    
+                   
+                    {name: "Steam Momos(Veg)", price: 69},
+                    {name: "Steam Momos(Paneer)", price: 89},
+                    {name: "Fry Momos(Veg)", price: 79},
+                    {name: "Fry Momos (PANEER)", price: 109},
+                    {name: "Peri Peri Momos (veg)", price: 99},
+                    {name: "Peri Peri Momos(paneer)", price: 129},
+                    {name: "Kurkure Momos(veg)", price: 99},
+                    {name: "Kurkure Momos(paneer)", price: 129 },
+                    {name: "Gravy Momos(veg)", price: 119},
+                    {name: "Gravy Momos (paneer)", price: 149},
+                    {name: "Tandoori Momos(veg)", price: 109},
+                    {name: "Tandoori Momos (paneer)", price: 139}
+                ] 
+            },
+            { 
+                category: "chinese Appentizer", 
+                items: [
+                    {name: "Veg Noodles", price: 79},
+                    {name: "Manchurian Noodles", price: 89},
+                    {name: "Hakka Noodles", price: 89},
+                    {name: "Sezwan Noodles", price: 89},
+                    {name: "Paneer Noodles", price: 119},
+                    {name: "Garlic Noodles", price: 129},
+                    {name: "Singapuri Noodles", price: 149},
+                    {name: "Triple Sezwan Noodles", price: 169},
+                    {name: "Veg Fried Rice", price: 99},
+                    {name: "Manchurian Fried Rice", price: 109},
+                    {name: "Sezwan Fried Rice", price: 109},
+                    {name: "Paneer Fried Rice", price: 129},
+                    {name: "Garlic Fried Rice", price: 129},
+                    {name: "Cocktail Rice", price: 129},
+                    {name: "Singapuri Fried Rice", price: 149},
+                    {name: "Triple Sezwan Fried Rice", price: 169}
+                ] 
+            },
+            { 
+                category: "Starters & Fries", 
+                items: [
+                    {name: "Plain Fries", price: 89},
+                    {name: "Peri Peri Fries", price: 99},
+                    {name: "Cheesy Fries", price: 149},
+                    {name: "Veg Seekh Kabab", price: 169},
+                    {name: "Hara Bhara Kabab", price: 179},
+                    {name: "Paneer Tikka", price: 199},
+                    {name: "Paneer Achari Tikka", price: 209},
+                    {name: "Paneer Pahadi Tikka", price: 219},
+                    {name: "Paneer Malai Tikka", price: 229},
+                    {name: "Paneer Tiranga Tikka", price: 249},
+                    {name: "Paneer Cheese Tikka", price: 239},
+                    {name: "Jamun Shot", price: 59},
+                    {name: "Paan Shot", price: 79},
+                    {name: "Guava Shot", price: 69},
+                    {name: "Green Apple Shot", price: 69}
+                ] 
+            },
+            { 
+                category: "Main Course (Veg)", 
+                items: [
+                    {name: "Aloo Mutter", price: 129},
+                    {name: "Aloo Gobi", price: 149},
+                    {name: "Aloo Jeera", price: 109},
+                    {name: "Sev Tamatar", price: 159},
+                    {name: "Mix Veg", price: 169},
+                    {name: "Veg Kadai", price: 169},
+                    {name: "Veg Handi", price: 169},
+                    {name: "Veg Kolhapuri", price: 179},
+                    {name: "Veg Do Pyaza", price: 169},
+                    {name: "Veg Diwani Handi", price: 179},
+                    {name: "Veg Bhuna Masala", price: 179},
+                    {name: "Veg Patiyala", price: 219},
+                    {name: "Veg Anda Curry", price: 199},
+                    {name: "Veg Jaipuri", price: 199},
+                    {name: "Veg Keema Kasturi", price: 179},
+                    {name: "Dum Aloo Kolhapuri", price: 179},
+                    {name: "Palak Lasuni", price: 189},
+                    {name: "Methi Lasuni", price: 199},
+                    {name: "Methi Mutter Malai", price: 189},
+                    {name: "Dum Aloo Kashmiri", price: 179},
+                    {name: "Mushroom Curry", price: 199},
+                    {name: "Mushroom Masala", price: 199},
+                    {name: "Baigan Bharta", price: 169},
+                    {name: "Baigan Masala", price: 159},
+                    {name: "Tomato Chutney", price: 159},
+                    {name: "Chana Masala", price: 169},
+                    {name: "Dum Aloo Punjabi", price: 169},
+                    {name: "CM Special Dish", price: 299}
+                ] 
+            },
+            { 
+                category: "Main Course (Paneer)", 
+                items: [
+                    {name: "Paneer Mutter (Full)", price: 169},
+                    {name: "Paneer Mutter (Half)", price: 139},
+                    {name: "Paneer Laccha (Full)", price: 189},
+                    {name: "Paneer Butter Masala (Full)", price: 189},
+                    {name: "Paneer Masala (Full)", price: 189},
+                    {name: "Paneer Kolhapuri (Full)", price: 189},
+                    {name: "Paneer Saoji (Full)", price: 189},
+                    {name: "Paneer Varadi (Full)", price: 199},
+                    {name: "Paneer Palak", price: 179},
+                    {name: "Paneer Do Pyaza", price: 179},
+                    {name: "Paneer Kadai", price: 179},
+                    {name: "Paneer Bhurji Curry", price: 189},
+                    {name: "Paneer Latpata", price: 189},
+                    {name: "Paneer Lababdar", price: 199},
+                    {name: "Paneer Shahi", price: 199},
+                    {name: "Paneer Patiyala", price: 199},
+                    {name: "Paneer Pasanda", price: 239},
+                    {name: "Paneer Kaju Masala", price: 239},
+                    {name: "Paneer Tikka Masala", price: 279},
+                    {name: "Paneer Mushroom Masala", price: 279},
+                    {name: "Paneer Kofta Curry", price: 199},
+                    {name: "Malai Kofta Curry", price: 209},
+                    {name: "Veg Kofta Curry", price: 189},
+                    {name: "Veg Maratha Curry", price: 189}
+                ] 
+            },
+            { 
+                category: "Kaju Special", 
+                items: [
+                    {name: "Kaju Curry", price: 229},
+                    {name: "Kaju Masala", price: 239},
+                    {name: "Kaju Mushroom Masala", price: 249},
+                    {name: "Kaju Saoji Masala", price: 249},
+                    {name: "Kaju Varadi Curry", price: 249}
+                ] 
+            },
+            { 
+                category: "Kofta", 
+                items: [
+                       {name: "Paneer Kofta Curry", price: 199},
+                    {name: "Malai Kofta Curry", price: 209},
+                    {name: "Veg Kofta Curry", price: 189},
+                    {name: "Veg Maratha Curry", price: 189}
+                ] 
+            },
+            { 
+                category: "Roti & Breads", 
+                items: [
+                    {name: "Tandoori Roti", price: 15},
+                    {name: "Butter Tandoori Roti", price: 19},
+                    {name: "Tawa Roti", price: 15},
+                    {name: "Butter Tawa Roti", price: 19},
+                    {name: "Plain Naan", price: 45},
+                    {name: "Butter Naan", price: 55},
+                    {name: "Garlic Naan", price: 65},
+                    {name: "Stuffed Naan", price: 65},
+                    {name: "Cheese Naan", price: 85},
+                    {name: "Chur Chur Naan", price: 69},
+                    {name: "Masala Kulcha", price: 59},
+                    {name: "Aloo Paratha (with Curd)", price: 69},
+                    {name: "Mix Paratha (with Curd)", price: 79},
+                    {name: "Paneer Paratha (with Curd)", price: 89},
+                    {name: "Cheese Paratha (with Curd)", price: 99}
+                ] 
+            },
+            { 
+                category: "Rice & Dal", 
+                items: [
+                    {name: "Plain Rice (Full)", price: 99},
+                    {name: "Plain Rice (Half)", price: 69},
+                    {name: "Jeera Rice (Full)", price: 109},
+                    {name: "Jeera Rice (Half)", price: 79},
+                    {name: "Garlic Jeera Rice (Full)", price: 129},
+                    {name: "Garlic Jeera Rice (Half)", price: 99},
+                    {name: "Veg Pulao", price: 149},
+                    {name: "Paneer Pulao", price: 169},
+                    {name: "Kashmiri Pulao", price: 189},
+                    {name: "Paneer Biryani (Gravy)", price: 219},
+                    {name: "Veg Biryani (Gravy)", price: 199},
+                    {name: "Dal Khichdi", price: 169},
+                    {name: "Butter Dal Khichdi", price: 179},
+                    {name: "Masala Khichdi", price: 189},
+                    {name: "Namdev Rice", price: 189},
+                    {name: "Dal Fry (Full)", price: 119},
+                    {name: "Dal Fry (Half)", price: 89},
+                    {name: "Dal Tadka", price: 129},
+                    {name: "Dal Jeera", price: 119},
+                    {name: "Dal Kolhapuri", price: 149},
+                    {name: "Dal Saoji", price: 149},
+                    {name: "Dal Butter", price: 129}
+                ] 
+            },
+            { 
+                category: "Soup & Salad", 
+                items: [
+                    {name: "Manchow Soup", price: 79},
+                    {name: "Hot & Sour Soup", price: 79},
+                    {name: "Veg Clear Soup", price: 79},
+                    {name: "Tomato Soup", price: 89},
+                    {name: "Sweet Corn Soup", price: 89},
+                    {name: "Plain Curd (Full)", price: 49},
+                    {name: "Boondi Raita", price: 49},
+                    {name: "Mix Raita", price: 59},
+                    {name: "Pineapple Raita", price: 69},
+                    {name: "Butter Milk", price: 29},
+                    {name: "Lassi Plain", price: 39},
+                    {name: "Ice Cream Lassi", price: 49},
+                    {name: "Green Salad (Full)", price: 49},
+                    {name: "Onion Salad (Full)", price: 29},
+                    {name: "Kachumber Salad", price: 89},
+                    {name: "Family Salad", price: 89},
+                    {name: "Roasted Papad", price: 19},
+                    {name: "Fry Papad", price: 35},
+                    {name: "Masala Papad", price: 49}
+                ] 
+            },
+            { 
+                category: "Cold Coffee", 
+                items: [
+                    {name: "Black Cold Coffee", price: 59},
+                    {name: "Black Cold Coffee (With Ice Cream)", price: 79},
+                    {name: "Regular Cold Coffee", price: 69},
+                    {name: "Regular Cold Coffee (With Ice Cream)", price: 89},
+                    {name: "Classic Cold Coffee", price: 79},
+                    {name: "Classic Cold Coffee (With Ice Cream)", price: 99},
+                    {name: "Vanilla Cold Coffee", price: 79},
+                    {name: "Vanilla Cold Coffee (With Ice Cream)", price: 99},
+                    {name: "Hazelnut Cold Coffee", price: 89},
+                    {name: "Hazelnut Cold Coffee (With Ice Cream)", price: 109},
+                    {name: "Butterscotch Cold Coffee", price: 89},
+                    {name: "Butterscotch Cold Coffee (With Ice Cream)", price: 109}
+                ] 
+            },
+            { 
+                category: "Shakes", 
+                items: [
+                    {name: "Mango Shake", price: 79},
+                    {name: "Mango Shake (With Ice Cream)", price: 99},
+                    {name: "Pineapple Shake", price: 79},
+                    {name: "Pineapple Shake (With Ice Cream)", price: 99},
+                    {name: "Guava Shake", price: 79},
+                    {name: "Guava Shake (With Ice Cream)", price: 99},
+                    {name: "Strawberry Shake", price: 89},
+                    {name: "Strawberry Shake (With Ice Cream)", price: 109},
+                    {name: "Litchi Shake", price: 89},
+                    {name: "Litchi Shake (With Ice Cream)", price: 109},
+                    {name: "Blueberry Shake", price: 89},
+                    {name: "Blueberry Shake (With Ice Cream)", price: 109},
+                    {name: "Butterscotch Shake", price: 89},
+                    {name: "Butterscotch Shake (With Ice Cream)", price: 109},
+                    {name: "Chocolate Shake", price: 89},
+                    {name: "Chocolate Shake (With Ice Cream)", price: 109},
+                    {name: "Choco Chips Shake", price: 99},
+                    {name: "Choco Chips Shake (With Ice Cream)", price: 119},
+                    {name: "Kit Kat Shake", price: 99},
+                    {name: "Kit Kat Shake (With Ice Cream)", price: 119},
+                    {name: "Oreo Shake", price: 99},
+                    {name: "Oreo Shake (With Ice Cream)", price: 119},
+                    {name: "Bourbon Shake", price: 99},
+                    {name: "Bourbon Shake (With Ice Cream)", price: 119},
+                    {name: "Belgian Shake", price: 139},
+                    {name: "Belgian Shake (With Ice Cream)", price: 159},
+                    {name: "Brownie Shake", price: 149},
+                    {name: "Brownie Shake (With Ice Cream)", price: 169}
+                ] 
+            },
+            { 
+                category: "Fresh Squeeze", 
+                items: [
+                    {name: "Lemon Squeeze", price: 39},
+                    {name: "Orange Squeeze", price: 49},
+                    {name: "Kala Khatta Squeeze", price: 49},
+                    {name: "Rose Squeeze", price: 49},
+                    {name: "Pineapple Squeeze", price: 59},
+                    {name: "Mango Squeeze", price: 59},
+                    {name: "Strawberry Squeeze", price: 59}
+                ] 
+            },
+            { 
+                category: "Hot Coffee", 
+                items: [
+                    {name: "Black Hot Coffee", price: 29},
+                    {name: "Regular Hot Coffee", price: 39},
+                    {name: "Classic Hot Coffee", price: 39},
+                    {name: "Vanilla Hot Coffee", price: 39},
+                    {name: "Hazelnut Hot Coffee", price: 49},
+                    {name: "Butterscotch Hot Coffee", price: 49}
+                ] 
+            },
+            { 
+                category: "Mocktail", 
+                items: [
+                    {name: "Fresh Lime Soda", price: 49},
+                    {name: "Blue Mojito", price: 79},
+                    {name: "Virgin Mojito", price: 79},
+                    {name: "Strawberry Mojito", price: 89},
+                    {name: "Blueberry Mojito", price: 89},
+                    {name: "Guava Mojito", price: 89},
+                    {name: "Green Apple Mojito", price: 89}
+                ] 
+            },
+            { 
+                category: "Thali", 
+                items: [
+                    {name: "Regular Thali ", price: 219},
+                    {name: "Deluxe Thali", price: 249},
+                    {name: "Premium Thali", price: 299},
+                    {name: "Chatak Matak Special Thali", price: 349}
+                ] 
+            },
+            { 
+                category: "Kids Birthday Party Menu", 
+                items: [
+                    {name: "Super Hero Pack (Min 10 Pax)", price: 99},
+                    {name: "Masti Ki Thali (Min 10 Pax)", price: 149},
+                    {name: "Mini Maharaja Mix (Min 10 Pax)", price: 199}
+                ] 
+            },
+            { 
+                category: "Dessert", 
+                items: [
+                    {name: "Rasgulla", price: 29},
+                    {name: "Gulab Jamun", price: 29},
+                    {name: "Chocolate Brownie", price: 99},
+                    {name: "Brownie With Ice Cream", price: 139},
+                    {name: "Almond Nuts Brownie", price: 149},
+                    {name: "Choco Lava Cake", price: 129},
+                    {name: "Chocolate Sunday", price: 79}
+                ] 
+            }
+        ];
+
+        let cart = {};
+        // Default Mode: Dine In
+        let currentMode = 'dinein';
+
+        window.onload = function() {
+            renderCategories();
+            renderMenu();
+            setOrderMode(currentMode); // Initialize inputs
+        };
+
+        function setOrderMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${mode}`).classList.add('active');
+            
+            // Toggle Fields
+            if(mode === 'delivery') {
+                document.getElementById('delivery-fields').style.display = 'block';
+                document.getElementById('dinein-fields').style.display = 'none';
+            } else {
+                document.getElementById('delivery-fields').style.display = 'none';
+                document.getElementById('dinein-fields').style.display = 'block';
+            }
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('category-bar');
+            container.innerHTML = menuData.map((cat, i) => 
+                `<button class="cat-btn ${i===0?'active':''}" onclick="scrollToCat('${i}')">${cat.category}</button>`
+            ).join('');
+        }
+
+        function renderMenu() {
+            const container = document.getElementById('menu-list');
+            // Using Index as ID to prevent string issues
+            container.innerHTML = menuData.map((cat, cIndex) => `
+                <div id="cat-${cIndex}">
+                    <h2 class="category-title">${cat.category}</h2>
+                    ${cat.items.map((item, iIndex) => {
+                        const uniqueId = `item-${cIndex}-${iIndex}`;
+                        return `
+                        <div class="item-card">
+                            <div class="item-info">
+                                <h3>${item.name}</h3>
+                                <div class="price">₹${item.price}</div>
+                            </div>
+                            <div class="add-btn-wrapper">
+                                <button class="btn-add-initial" id="add-btn-${uniqueId}" onclick="startAdd(${cIndex}, ${iIndex}, '${uniqueId}')">ADD</button>
+                                <div class="qty-controls" id="qty-controls-${uniqueId}">
+                                    <button class="qty-btn" onclick="updateQty(${cIndex}, ${iIndex}, -1, '${uniqueId}')">-</button>
+                                    <span id="qty-${uniqueId}">1</span>
+                                    <button class="qty-btn" onclick="updateQty(${cIndex}, ${iIndex}, 1, '${uniqueId}')">+</button>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+            `).join('');
+        }
+
+        function scrollToCat(index) {
+            document.getElementById(`cat-${index}`).scrollIntoView({behavior: 'smooth', block: 'start'});
+            document.querySelectorAll('.cat-btn').forEach((btn, i) => {
+                if(i == index) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+        }
+
+        // Add Button Logic
+        function startAdd(cIndex, iIndex, uid) {
+            document.getElementById(`add-btn-${uid}`).style.display = 'none';
+            document.getElementById(`qty-controls-${uid}`).style.display = 'flex';
+            updateQty(cIndex, iIndex, 1, uid, true);
+        }
+
+        function updateQty(cIndex, iIndex, change, uid, isFirst = false) {
+            const item = menuData[cIndex].items[iIndex];
+            const name = item.name;
+            const price = item.price;
+
+            if (!cart[name]) cart[name] = { price: price, qty: 0 };
+            
+            if (!isFirst) {
+                cart[name].qty += change;
+            } else {
+                cart[name].qty = 1;
+            }
+
+            if (cart[name].qty <= 0) {
+                delete cart[name];
+                document.getElementById(`qty-controls-${uid}`).style.display = 'none';
+                document.getElementById(`add-btn-${uid}`).style.display = 'block';
+            } else {
+                document.getElementById(`qty-${uid}`).innerText = cart[name].qty;
+            }
+
+            updateCartBar();
+        }
+
+        function updateCartBar() {
+            let count = 0, total = 0;
+            for(let key in cart) {
+                count += cart[key].qty;
+                total += cart[key].qty * cart[key].price;
+            }
+            document.getElementById('total-items').innerText = `${count} Items`;
+            document.getElementById('total-price').innerText = `₹${total}`;
+            
+            // Show bar only if items exist
+            document.getElementById('cart-bar').style.display = count > 0 ? 'flex' : 'none';
+        }
+
+        // Location & Modal Logic
+        function getLocation() {
+            if (navigator.geolocation) {
+                const btn = document.querySelector('.loc-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fetching...';
+                
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const long = position.coords.longitude;
+                        const mapLink = `http://googleusercontent.com/maps.google.com/?q=${lat},${long}`;
+                        document.getElementById('cust-address').value = `📍 GPS Location: ${mapLink}\n(Add landmark here)`;
+                        btn.innerHTML = '<i class="fas fa-check"></i> Location Added';
+                    },
+                    (error) => {
+                        alert("Could not get location.");
+                        btn.innerHTML = originalText;
+                    }
+                );
+            } else { alert("Geolocation not supported."); }
+        }
+
+        function openDetailsModal() {
+            document.getElementById('order-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('order-modal').style.display = 'none';
+        }
+
+        function sendToWhatsapp() {
+            let details = "";
+            if(currentMode === 'delivery') {
+                const name = document.getElementById('cust-name').value;
+                const address = document.getElementById('cust-address').value;
+                if(!name || !address) { alert("Please enter Name and Address"); return; }
+                details = `*Order Type:* 🛵 Home Delivery\n*Name:* ${name}\n*Address:* ${address}`;
+            } else {
+                const table = document.getElementById('table-no').value;
+                if(!table) { alert("Enter Table No"); return; }
+                details = `*Order Type:* 🍽 Dine-In\n*Table No:* ${table}`;
+            }
+
+            let items = "";
+            let total = 0;
+            for(let key in cart) {
+                items += `- ${key} x ${cart[key].qty} = ₹${cart[key].qty * cart[key].price}\n`;
+                total += cart[key].qty * cart[key].price;
+            }
+
+            const msg = `*New Order - Chatak Matak*\n\n${details}\n\n*Order Details:*\n${items}\n----------------\n*Total Bill: ₹${total}*`;
+            window.open(`https://wa.me/9284669355?text=${encodeURIComponent(msg)}`, '_blank');
+            closeModal();
+        }
+    </script>
+</body>
+</html>
